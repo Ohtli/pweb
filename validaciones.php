@@ -11,11 +11,10 @@ function validar_curp($curp) {
         return false;
     }
     
-    // Check if the CURP has a valid checksum
-    $checkDigit = strtoupper($curp[17]);
+    $checkDigit = $curp[17];
     $curpWithoutCheckDigit = substr($curp, 0, 17);
     $validCheckDigit = calculateCURPCheckDigit($curpWithoutCheckDigit);
-    if ($checkDigit !== $validCheckDigit) {
+    if (intval($checkDigit) !== $validCheckDigit) {
         return false;
     }
     
@@ -29,10 +28,19 @@ function calculateCURPCheckDigit($curp) {
     for ($i = 0; $i < strlen($curp); $i++) {
         $char = strtoupper($curp[$i]);
         $value = strpos($alphabet, $char);
+        
+        if ($value >= 26) {
+            $value = $value - 1;
+        }
+        
         $weight = 18 - $i;
         $sum += $value * $weight;
     }
     
     $checkDigitIndex = $sum % 10;
-    return $alphabet[$checkDigitIndex];
+    
+    if($checkDigitIndex == 0)
+        return 0;
+    $checkDigitIndex = 10 - $checkDigitIndex;
+    return $checkDigitIndex;
 }

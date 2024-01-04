@@ -1,30 +1,18 @@
 <?php
-    require 'database.php';
     session_start();
     if(!isset($_SESSION['curp'])){
         header("Location: login.php");
         exit();
     }
-    $sql = "SELECT * FROM users WHERE curp = :curp";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':curp' => $_SESSION['curp']));
-    $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    if(count($resultados) == 1){
-        $datos = $resultados[0];
-    } else {
-        $datos = $resultados[0];
-        $datos['DISTINCION'] = array(0=>$datos['DISTINCION'],
-        1=>$resultados[1]['DISTINCION']);
-    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 </head>
 <body>
-    <h1>hola <?php echo $datos['NOMBRE'] ?></h1>
-    <?php foreach($datos as $d => $da){
+    <h1>Bienvenido <?php echo $_SESSION['nombre'] ?></h1>
+    <?php foreach($_SESSION as $d => $da){
         if(is_array($da)){
             echo "<p>$d: ";
             foreach($da as $d2 => $da2){
@@ -54,9 +42,9 @@
     </form>
 
     <?php
-        if($datos['CONFIRMACION'] != null){
+        if($_SESSION['confirmacion'] != null){
             echo "<p>Confirmado</p>";
-            echo "<p>Fecha de confirmación:" .$datos['CONFIRMACION']."</p>";
+            echo "<p>Fecha de confirmación:" .$_SESSOIN['confirmacion']."</p>";
             echo "<a href='descargar_pdf.php'>PDF</a>";
         }
     ?>

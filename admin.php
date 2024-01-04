@@ -1,9 +1,12 @@
 <?php
     session_start();
     if(isset($_SESSION['curp'])){
-        session_start();
         $_SESSION = array();
         session_destroy();
+    }
+    if(isset($_SESSION['admin'])){
+        header("Location: admin_index.php");
+        exit();
     }
 ?>
 <!DOCTYPE html>

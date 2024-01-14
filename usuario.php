@@ -9,47 +9,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Bienvenido <?php echo $_SESSION['nombre'] ?></h1>
-    <?php foreach($_SESSION as $d => $da){
-        if(is_array($da)){
-            echo "<p>$d: ";
-            foreach($da as $d2 => $da2){
-                echo "$da2 ";
-            }
-            echo "</p>";
-        } else
-        echo "<p>$d: $da</p>";
-    } 
-    ?>
-    <h2>Confirmar</h2>
-    <form action="confirmar.php" method="POST">
-        <label for="acompanante">¿Llevaras acompanante?</label>
-        <input type="radio" id="acompanante" name="acompanante" value="1"> Si
-        <input type="radio" id="acompanante" name="acompanante" value="0"> No
+    <header>
 
-        <label for="combobox">¿Sufres alguna discapacidad?</label>
-        <select id="combobox" name="combobox">
-            <option value="1">Bastón</option>
-            <option value="2">Muletas</option>
-            <option value="3">Silla de Ruedas</option>
-            <option value="4">Perro Guía</option>
-            <option value="5">Ninguna</option>
-            <option value="6">Otro</option>
-        </select>
-        <input type="submit" value="Confirmar">
-    </form>
-
-    <?php
-        if($_SESSION['confirmacion'] != null){
-            echo "<p>Confirmado</p>";
-            echo "<p>Fecha de confirmación:" .$_SESSOIN['confirmacion']."</p>";
-            echo "<a href='descargar_pdf.php'>PDF</a>";
-        }
-    ?>
+    </header>
+    <div class="container-sm">
+        <main>
+            <div class="row g-3">
+                <div class="col-sm-12 col-md-12">
+                    <h1>Bienvenid@ <?php echo htmlspecialchars($_SESSION['nombre']) ?></h1>
+                    
+                </div>
+                <div class="col-sm-12 col-md-5">
+                <?php
+                        if($_SESSION['confirmacion'] != null){
+                            echo "<p>Ha confirmado su asistencia</p>";
+                            echo "<p>Fecha de confirmación: " .$_SESSION['confirmacion']."</p>";
+                            echo "<a class='link-success' href='descargar_pdf.php' target='_blank'>Descargue su invitación</a>";
+                        } else{
+                            require_once 'formulario.html';
+                        } 
+                    ?>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    
 
     
     <a href="logout.php">Cerrar Sesión</a>
+    <script>
+        function confirmar(event){
+            event.preventDefault();
+            let discapacidad = document.getElementById('discapacidad').value;
+            let acompanante = document.getElementById('acompanante').checked;
+            let data = new FormData();
+            data.append('discapacidad', discapacidad);
+            data.append('acompanante', acompanante);
+            fetch('confirmar.php', {
+                method: 'POST',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error){
+                    alert(data.message);
+                } else{
+                    alert(data.message);
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        const form = document.getElementById('formulario');
+        form.addEventListener('submit', confirmar);
+    </script>
 </body>
 </html>

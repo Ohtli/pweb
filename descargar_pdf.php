@@ -1,11 +1,12 @@
 <?php 
+    session_start();
     if(!isset($_SESSION['curp'])){
         header("Location: login.php");
         exit();
     }
     require_once __DIR__ . '/vendor/autoload.php'; // Include mPDF library
     $mpdf = new \Mpdf\Mpdf();   
-    session_start();
+    
     // Set the PDF header content
     $header = '
         <table width="100%" style="border-collapse: collapse;">
@@ -44,7 +45,7 @@
         }
     }
     // Output the PDF
-    $mpdf->Output('user_details.pdf', 'D');
+    $mpdf->Output('user_details.pdf', 'I');
     
     
 ?>

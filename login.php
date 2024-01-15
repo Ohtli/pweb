@@ -22,10 +22,9 @@
                     $_SESSION['discapacidad'] = $resultado[0]['DISCAPACIDAD'];
                     $_SESSION['confirmacion'] = $resultado[0]['CONFIRMACION'];
                     $_SESSION['acompanante'] = $resultado[0]['ACOMPANANTE'];
-                    if(count($resultado) == 1){
-                        $_SESSION['distincion'] = $resultados[0];
-                    } else {
-                        $_SESSION['distincion'] = array(0=>$resultados[0]['DISTINCION'],1=>$resultados[1]['DISTINCION']);
+                    $_SESSION['distincion'] = array();
+                    foreach($resultado as $row) {
+                        $_SESSION['distincion'][] = $row['DISTINCION'];
                     }
                     header("Location: usuario.php");
                     $conn = null;
@@ -36,4 +35,4 @@
                 header("Location: index.php");
             }
     }
-?>
+

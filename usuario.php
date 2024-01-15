@@ -13,16 +13,23 @@
 </head>
 <body>
     <header>
-
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Eventos IPN</span>
+            <a class="btn btn-danger" href="logout.php">Cerrar Sesión</a>
+            </div>
+            
+        </nav>
     </header>
     <div class="container-sm">
         <main>
-            <div class="row g-3">
-                <div class="col-sm-12 col-md-12">
+            <div class="row g-3 justify-content-center">
+                <div class="col-auto">
                     <h1>Bienvenid@ <?php echo htmlspecialchars($_SESSION['nombre']) ?></h1>
                     
                 </div>
-                <div class="col-sm-12 col-md-5">
+                <div class="w-100"></div>
+                <div class="col-auto">
                 <?php
                         if($_SESSION['confirmacion'] != null){
                             echo "<p>Ha confirmado su asistencia</p>";
@@ -41,7 +48,7 @@
     
 
     
-    <a href="logout.php">Cerrar Sesión</a>
+    
     <script>
         function confirmar(event){
             event.preventDefault();

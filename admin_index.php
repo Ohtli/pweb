@@ -16,6 +16,15 @@ if (!isset($_SESSION['admin'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
+    <header>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Eventos IPN</span>
+            <a class="btn btn-danger" href="logout.php">Cerrar Sesión</a>
+            </div>
+            
+        </nav>
+    </header>
     <div class="container">
         <div class="row">
             <h1>Bienvenido Administrador</h1>
@@ -60,7 +69,7 @@ if (!isset($_SESSION['admin'])) {
                                 <label class="form-label" for="distincionInput">Distinción</label>
                             </div>
                         </div>
-                        <button class="btn col" type="submit">Registrar</button>
+                        <button class="btn btn-success col" type="submit">Registrar</button>
                     </div>
                 </form>
             </div>
@@ -86,7 +95,6 @@ if (!isset($_SESSION['admin'])) {
             </table>
             </div>
         </div>
-        <a href="logout.php">SALIR</a>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
@@ -106,19 +114,21 @@ if (!isset($_SESSION['admin'])) {
         }
         function listAttendants(offset) {
             // Logic to list all attendants
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'listar.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Process the response
-                    var attendants = JSON.parse(xhr.responseText);
+            fetch('listar.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'offset=' + offset
+            })
+                .then(response => response.json())
+                .then(attendants => {
                     // Do something with the attendants data
                     var tableBody = document.getElementById('attendantsTableBody');
-                    if(offset === 0){
+                    if (offset === 0) {
                         tableBody.innerHTML = '';
                     }
-                    attendants.forEach(function(attendant) {
+                    attendants.forEach(attendant => {
                         var row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${attendant.id}</td>
@@ -134,9 +144,10 @@ if (!isset($_SESSION['admin'])) {
                         `;
                         tableBody.appendChild(row);
                     });
-                }
-            };
-            xhr.send('offset=' + offset);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             offsetGlobal += 50;
         }
 
